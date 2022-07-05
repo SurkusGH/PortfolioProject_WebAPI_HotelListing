@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using PortfolioProject_WebAPI_HotelListing.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,20 +27,27 @@ namespace PortfolioProject_WebAPI_HotelListing
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            #region Database enableing
+            services.AddDbContext<DatabaseContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
+            );
+            #endregion
 
-            services.AddControllers();
-
+            #region Cross-Origin-Resource-Sharing
             services.AddCors(options => {  // <- Adding Cross-Origin-Resource-Sharing
                 options.AddPolicy("CorsPolicy_AllowAll", builder =>
                     builder.AllowAnyOrigin() // <- defines who can access
                            .AllowAnyMethod() // <- defines what methods are allowed tb executed
                            .AllowAnyHeader());
             });
+            #endregion
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PortfolioProject_WebAPI_HotelListing", Version = "v1" });
             });
+
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,7 +63,7 @@ namespace PortfolioProject_WebAPI_HotelListing
 
             app.UseHttpsRedirection();
 
-            app.UseCors("CorsPolicy_AllowAll"); // <- here we simply initiate CorsPolicy built in 32:37
+            app.UseCors("CorsPolicy_AllowAll"); // <- here we simply initiate CorsPolicy built in lines 32:37
 
             app.UseRouting();
 
