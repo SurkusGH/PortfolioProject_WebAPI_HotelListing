@@ -28,6 +28,14 @@ namespace PortfolioProject_WebAPI_HotelListing
         {
 
             services.AddControllers();
+
+            services.AddCors(options => {  // <- Adding Cross-Origin-Resource-Sharing
+                options.AddPolicy("CorsPolicy_AllowAll", builder =>
+                    builder.AllowAnyOrigin() // <- defines who can access
+                           .AllowAnyMethod() // <- defines what methods are allowed tb executed
+                           .AllowAnyHeader());
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PortfolioProject_WebAPI_HotelListing", Version = "v1" });
@@ -40,11 +48,14 @@ namespace PortfolioProject_WebAPI_HotelListing
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PortfolioProject_WebAPI_HotelListing v1"));
             }
 
+            app.UseSwagger(); // <- these two lines are moved from if statement above, so that they are not conditional
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PortfolioProject_WebAPI_HotelListing v1"));
+
             app.UseHttpsRedirection();
+
+            app.UseCors("CorsPolicy_AllowAll"); // <- here we simply initiate CorsPolicy built in 32:37
 
             app.UseRouting();
 
