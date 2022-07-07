@@ -9,7 +9,7 @@ using PortfolioProject_WebAPI_HotelListing.DataAccess;
 namespace PortfolioProject_WebAPI_HotelListing.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220705170616_DatabaseCreation")]
+    [Migration("20220707072436_DatabaseCreation")]
     partial class DatabaseCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,7 +45,7 @@ namespace PortfolioProject_WebAPI_HotelListing.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Adress")
+                    b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CountryId")
