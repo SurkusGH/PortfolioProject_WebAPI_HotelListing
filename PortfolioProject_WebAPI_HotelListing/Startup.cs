@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using PortfolioProject_WebAPI_HotelListing.Configutarions;
 using PortfolioProject_WebAPI_HotelListing.DataAccess;
 using System;
 using System.Collections.Generic;
@@ -41,6 +42,10 @@ namespace PortfolioProject_WebAPI_HotelListing
                            .AllowAnyMethod() // <- defines what methods are allowed tb executed
                            .AllowAnyHeader());
             });
+            #endregion
+
+            #region AutoMaper
+            services.AddAutoMapper(typeof(MapperInitializer));
             #endregion
 
             services.AddSwaggerGen(c =>
