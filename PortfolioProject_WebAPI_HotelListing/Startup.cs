@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using PortfolioProject_WebAPI_HotelListing.Configutarions;
 using PortfolioProject_WebAPI_HotelListing.DataAccess;
+using PortfolioProject_WebAPI_HotelListing.IRepository;
+using PortfolioProject_WebAPI_HotelListing.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,12 +50,22 @@ namespace PortfolioProject_WebAPI_HotelListing
             services.AddAutoMapper(typeof(MapperInitializer));
             #endregion
 
+            #region UnitOfWork registration
+            // Transient means - every time this service is needed new instance will be created for a lifetime of set of requests
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            #endregion
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PortfolioProject_WebAPI_HotelListing", Version = "v1" });
             });
 
-            services.AddControllers();
+            #region Microsoft.AspNetCore.Mvc.NewtonsoftJson
+            services.AddControllers().AddNewtonsoftJson(options => 
+                                                        options.SerializerSettings.ReferenceLoopHandling
+                                                              = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            // ^ this part is weird, lecture 19;
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
