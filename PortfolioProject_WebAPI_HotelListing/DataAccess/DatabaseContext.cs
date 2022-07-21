@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PortfolioProject_WebAPI_HotelListing.DataModels;
 
 namespace PortfolioProject_WebAPI_HotelListing.DataAccess
 {
-    public class DatabaseContext : DbContext
+    public class DatabaseContext : IdentityDbContext<ApiUser>
     {
         public DatabaseContext(DbContextOptions options) : base(options)
         {}
@@ -14,6 +15,8 @@ namespace PortfolioProject_WebAPI_HotelListing.DataAccess
         #region DataSeeding
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
             builder.Entity<Country>().HasData(
                 new Country
                 {
@@ -73,4 +76,6 @@ namespace PortfolioProject_WebAPI_HotelListing.DataAccess
 // Add-Migration SeedingData
 // Update-Database
 
+// Add-Migration AddedIdentity
+// Update-Database
 #endregion
