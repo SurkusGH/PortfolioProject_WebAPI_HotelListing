@@ -11,13 +11,13 @@ namespace PortfolioProject_WebAPI_HotelListing.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CountryController : ControllerBase
+    public class HotelController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork; // <- abstracted db access
         private readonly ILogger<CountryController> _logger; // <- logger has to be injected with the controler that is goint to be logged
         private readonly IMapper _mapper; // DtoAccess
 
-        public CountryController(IUnitOfWork unitOfWork,
+        public HotelController(IUnitOfWork unitOfWork,
                                  ILogger<CountryController> logger,
                                  IMapper mapper) // <- injection setup ctor for the whole controller
         {
@@ -27,36 +27,35 @@ namespace PortfolioProject_WebAPI_HotelListing.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCountries()
+        public async Task<IActionResult> GetHotels()
         {
             try
             {
-                var countries = await _unitOfWork.Countries.GetAll();
-                var results = _mapper.Map<IList<CountryDTO>>(countries);
+                var hotels = await _unitOfWork.Hotels.GetAll();
+                var results = _mapper.Map<IList<HotelDTO>>(hotels);
                 return Ok(results); // <- logs 200 with ok
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Something went wrong in the {nameof(GetCountries)}"); // <- exceptions comes first in the logger
-                return StatusCode(500, "Internal server error. Please Try Again Later.");    // <- tells user that there is server issue
+                _logger.LogError(ex, $"Something went wrong in the {nameof(GetHotels)}"); // <- exceptions comes first in the logger
+                return StatusCode(500, "Internal server error. Please Try Again Later."); // <- tells user that there is server issue
             }
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetCountry(int id)
+        public async Task<IActionResult> GetHotel(int id)
         {
             try
             {
-                var country = await _unitOfWork.Countries.Get(q => q.Id == id, new List<string> { "Hotels"});
-                var result = _mapper.Map<CountryDTO>(country);
+                var hotel = await _unitOfWork.Hotels.Get(q => q.Id == id, new List<string> { "Country" });
+                var result = _mapper.Map<HotelDTO>(hotel);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Something went wrong in the {nameof(GetCountry)}"); // <- exceptions comes first in the logger
+                _logger.LogError(ex, $"Something went wrong in the {nameof(GetHotel)}"); // <- exceptions comes first in the logger
                 return StatusCode(500, "Internal server error. Please Try Again Later.");    // <- tells user that there is server issue
             }
         }
     }
-
 }
