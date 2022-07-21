@@ -45,7 +45,7 @@ namespace PortfolioProject_WebAPI_HotelListing.Controllers
             {
                 var user = _mapper.Map<ApiUser>(userDto);
                 user.UserName = userDto.Email;
-                var result = await _userManager.CreateAsync(user);
+                var result = await _userManager.CreateAsync(user, userDto.Password);
 
                 if (!result.Succeeded)
                 {
