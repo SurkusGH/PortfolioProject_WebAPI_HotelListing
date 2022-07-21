@@ -27,6 +27,10 @@ namespace PortfolioProject_WebAPI_HotelListing.Controllers
         }
 
         [HttpGet]
+        #region Status.Codes
+        [ProducesResponseType(StatusCodes.Status200OK)]                     // <- these attributes gives more info for dev (in swagger)
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        #endregion
         public async Task<IActionResult> GetCountries()
         {
             try
@@ -43,6 +47,10 @@ namespace PortfolioProject_WebAPI_HotelListing.Controllers
         }
 
         [HttpGet("{id:int}")]
+        #region Status.Codes
+        [ProducesResponseType(StatusCodes.Status200OK)]                     // <- these attributes gives more info for dev (in swagger)
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        #endregion
         public async Task<IActionResult> GetCountry(int id)
         {
             try
