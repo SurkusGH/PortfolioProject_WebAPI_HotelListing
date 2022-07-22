@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace PortfolioProject_WebAPI_HotelListing.DTOs
 {
@@ -19,5 +20,7 @@ namespace PortfolioProject_WebAPI_HotelListing.DTOs
 
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
+
+        public ICollection<string> Roles { get; set; }
     }
 }

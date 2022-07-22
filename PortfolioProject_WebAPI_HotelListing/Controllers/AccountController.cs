@@ -55,6 +55,8 @@ namespace PortfolioProject_WebAPI_HotelListing.Controllers
                     }
                     return BadRequest(ModelState);
                 }
+
+                await _userManager.AddToRolesAsync(user, userDto.Roles);
                 return Accepted();
             }
             catch (Exception ex)

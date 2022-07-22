@@ -32,7 +32,7 @@ namespace PortfolioProject_WebAPI_HotelListing
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            #region Database enableing
+            #region (!) Database enabling
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
@@ -41,7 +41,7 @@ namespace PortfolioProject_WebAPI_HotelListing
             services.AddAuthentication();
             services.ConfigureIdentity();
 
-            #region Cross-Origin-Resource-Sharing
+            #region (!) Cross-Origin-Resource-Sharing setup
             services.AddCors(options => {  // <- Adding Cross-Origin-Resource-Sharing
                 options.AddPolicy("CorsPolicy_AllowAll", builder =>
                     builder.AllowAnyOrigin() // <- defines who can access
@@ -50,11 +50,11 @@ namespace PortfolioProject_WebAPI_HotelListing
             });
             #endregion
 
-            #region AutoMaper
+            #region (!) AutoMaper registration
             services.AddAutoMapper(typeof(MapperInitializer));
             #endregion
 
-            #region UnitOfWork registration
+            #region (!) UnitOfWork registration
             // Transient means - every time this service is needed new instance will be created for a lifetime of set of requests
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             #endregion
