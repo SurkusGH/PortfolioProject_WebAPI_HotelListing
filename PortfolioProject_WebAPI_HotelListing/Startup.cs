@@ -13,6 +13,7 @@ using PortfolioProject_WebAPI_HotelListing.Configutarions;
 using PortfolioProject_WebAPI_HotelListing.DataAccess;
 using PortfolioProject_WebAPI_HotelListing.IRepository;
 using PortfolioProject_WebAPI_HotelListing.Repository;
+using PortfolioProject_WebAPI_HotelListing.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,10 @@ namespace PortfolioProject_WebAPI_HotelListing
             services.AddAuthentication();
             services.ConfigureIdentity();
 
+            #region (!) JWT_ConfigurationViaExtension
+            services.ConfigureJWT(Configuration);
+            #endregion
+
             #region (!) Cross-Origin-Resource-Sharing setup
             services.AddCors(options => {  // <- Adding Cross-Origin-Resource-Sharing
                 options.AddPolicy("CorsPolicy_AllowAll", builder =>
@@ -57,6 +62,11 @@ namespace PortfolioProject_WebAPI_HotelListing
             #region (!) UnitOfWork registration
             // Transient means - every time this service is needed new instance will be created for a lifetime of set of requests
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            #endregion
+
+            #region (!) AuthManager registration
+            // Scoped means - method registers the service with a scoped lifetime, the lifetime of a single request. 
+            services.AddScoped<IAuthManager, AuthManager>();
             #endregion
 
             services.AddSwaggerGen(c =>
