@@ -34,26 +34,20 @@ namespace PortfolioProject_WebAPI_HotelListing.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
+        private SigningCredentials GetSigningCredentials()
         {
             var jwtSettings = _configuration.GetSection("Jwt");
+            var key = jwtSettings.GetSection("Key").Value;
+            //var key = "0a380a1d-758e-471e-a026-46633f874936";
+            //var key = Environment.GetEnvironmentVariable("KEY");
+            var secret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
 
-            var expiration = DateTime.Now.AddMinutes(Convert.ToDouble(
-                             jwtSettings.GetSection("lifetime").Value));
-
-            var token = new JwtSecurityToken(
-                issuer: jwtSettings.GetSection("Issuer").Value,
-                claims: claims,
-                expires: expiration,
-                signingCredentials: signingCredentials
-            );
-
-            return token;
+            return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
 
         private async Task<List<Claim>> GetClaims()
         {
-            var claims = new List<Claim>()
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, _user.UserName)
             };
@@ -68,18 +62,28 @@ namespace PortfolioProject_WebAPI_HotelListing.Services
             return claims;
         }
 
-        private SigningCredentials GetSigningCredentials()
+        private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
         {
-            var key = _configuration.GetSection("Jwt").Key;
-            var secret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var jwtSettings = _configuration.GetSection("Jwt");
 
-            return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
+            var expiration = DateTime.Now.AddMinutes(Convert.ToDouble(
+                             jwtSettings.GetSection("lifetime").Value));
+
+            var token = new JwtSecurityToken(
+                issuer: jwtSettings.GetSection("Issuer").Value,
+                audience: jwtSettings.GetSection("Audience").Value,
+                claims: claims,
+                expires: expiration,
+                signingCredentials: signingCredentials
+            );
+
+            return token;
         }
 
         public async Task<bool> ValidateUser(LoginUserDTO userDTO)
         {
             _user = await _userManager.FindByNameAsync(userDTO.Email);
-            return (_user != null && await _userManager.CheckPasswordAsync(_user, userDTO.Password));
+            return _user != null && await _userManager.CheckPasswordAsync(_user, userDTO.Password);
         }
     }
 }

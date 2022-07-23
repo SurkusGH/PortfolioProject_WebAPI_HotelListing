@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -39,7 +40,6 @@ namespace PortfolioProject_WebAPI_HotelListing
             );
             #endregion
 
-            services.AddAuthentication();
             services.ConfigureIdentity();
 
             #region (!) JWT_ConfigurationViaExtension
@@ -98,6 +98,10 @@ namespace PortfolioProject_WebAPI_HotelListing
             app.UseCors("CorsPolicy_AllowAll"); // <- here we simply initiate CorsPolicy built in lines 32:37
 
             app.UseRouting();
+
+            #region (!) JWTToken enabling middleware
+            app.UseAuthentication();
+            #endregion
 
             app.UseAuthorization();
 

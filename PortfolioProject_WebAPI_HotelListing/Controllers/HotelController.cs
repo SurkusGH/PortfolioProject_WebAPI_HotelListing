@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -47,6 +48,7 @@ namespace PortfolioProject_WebAPI_HotelListing.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("{id:int}")]
         #region Status.Codes
         [ProducesResponseType(StatusCodes.Status200OK)]                     // <- these attributes gives more info for dev (in swagger)

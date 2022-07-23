@@ -23,24 +23,28 @@ namespace PortfolioProject_WebAPI_HotelListing
         public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtSettings = configuration.GetSection("Jwt");
-            var key = jwtSettings.Key;
+            var key = jwtSettings.GetSection("Key").Value;
+            // var key = "0a380a1d-758e-471e-a026-46633f874936";
+            // var key = Environment.GetEnvironmentVariable("KEY");
+            // Key is encoded in CommandPrompt:AdminPriv: setx KEY "0a380a1d-758e-471e-a026-46633f874936" /M
 
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
+                    .AddJwtBearer(options =>
                     {
-                        ValidateIssuer = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = jwtSettings.GetSection("Issuer").Value,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
-                    };
-                });
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = jwtSettings.GetSection("Issuer").Value,
+                            ValidAudience = jwtSettings.GetSection("Audience").Value,
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+                        };
+                    });
         }
     }
 }
