@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using PortfolioProject_WebAPI_HotelListing.DataAccess;
 using PortfolioProject_WebAPI_HotelListing.IRepository;
 using System;
@@ -36,15 +37,13 @@ namespace PortfolioProject_WebAPI_HotelListing.Repository
             _db.RemoveRange(entities); // <- does not have async version, for some reason
         }
 
-        public async Task<T> Get(Expression<Func<T, bool>> expression, List<string> includes = null)
+        public async Task<T> Get(Expression<Func<T, bool>> expression,
+                                 Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
         {
             IQueryable<T> query = _db; // <- query of everything in a db *SET* meaning certain table countries/hotels
-            if (includes != null) // <- it include property which I indicate it to; but its optional
+            if (include != null) // <- it include property which I indicate it to; but its optional
             {
-                foreach (var includeProperty in includes)
-                {
-                    query = query.Include(includeProperty);
-                }
+                query = include(query);
             }
 
             return await query.AsNoTracking().FirstOrDefaultAsync(expression);
@@ -52,7 +51,9 @@ namespace PortfolioProject_WebAPI_HotelListing.Repository
                                                                 //^expression here makes generics extra flexible, based on the context
         }
 
-        public async Task<IList<T>> GetAll(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, List<string> includes = null)
+        public async Task<IList<T>> GetAll(Expression<Func<T, bool>> expression = null,
+                                           Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+                                           Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
         {
             IQueryable<T> query = _db;
 
@@ -61,12 +62,9 @@ namespace PortfolioProject_WebAPI_HotelListing.Repository
                 query = query.Where(expression);
             }
 
-            if (includes != null)
+            if (include != null)
             {
-                foreach (var includeProperty in includes)
-                {
-                    query = query.Include(includeProperty);
-                }
+                query = include(query);
             }
 
             if (orderBy != null)

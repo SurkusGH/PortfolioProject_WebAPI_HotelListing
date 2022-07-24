@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PortfolioProject_WebAPI_HotelListing.DataModels;
 using PortfolioProject_WebAPI_HotelListing.DTOs;
@@ -58,7 +59,7 @@ namespace PortfolioProject_WebAPI_HotelListing.Controllers
         {
             try
             {
-                var hotel = await _unitOfWork.Hotels.Get(q => q.Id == id, new List<string> { "Country" });
+                var hotel = await _unitOfWork.Hotels.Get(q => q.Id == id, include: q=> q.Include(x => x.Country));
                 var result = _mapper.Map<HotelDTO>(hotel);
                 return Ok(result);
             }
