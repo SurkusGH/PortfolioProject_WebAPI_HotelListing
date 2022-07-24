@@ -10,8 +10,10 @@ namespace PortfolioProject_WebAPI_HotelListing.Configutarions
         {
             CreateMap<Country, CountryDTO>().ReverseMap(); // <- Country model has a direct correlation to DTO and they go both directions
             CreateMap<Country, CreateCountryDTO>().ReverseMap();
+            CreateMap<Country, UpdateCountryDTO>().ReverseMap();
             CreateMap<Hotel, HotelDTO>().ReverseMap();
             CreateMap<Hotel, CreateHotelDTO>().ReverseMap();
+            CreateMap<Hotel, UpdateHotelDTO>().ReverseMap();
             CreateMap<ApiUser, UserDTO>().ReverseMap();
         }
     }
