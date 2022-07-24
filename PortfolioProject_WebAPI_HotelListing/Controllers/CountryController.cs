@@ -35,11 +35,11 @@ namespace PortfolioProject_WebAPI_HotelListing.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]                     // <- these attributes gives more info for dev (in swagger)
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         #endregion
-        public async Task<IActionResult> GetCountries()
+        public async Task<IActionResult> GetCountries([FromQuery] RequestParams requestParams)
         {
             try
             {
-                var countries = await _unitOfWork.Countries.GetAll();
+                var countries = await _unitOfWork.Countries.GetPagedList(requestParams);
                 var results = _mapper.Map<IList<CountryDTO>>(countries);
                 return Ok(results); // <- logs 200 with ok
             }

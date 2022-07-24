@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using PortfolioProject_WebAPI_HotelListing.DataAccess;
+using PortfolioProject_WebAPI_HotelListing.DataModels;
 using PortfolioProject_WebAPI_HotelListing.IRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace PortfolioProject_WebAPI_HotelListing.Repository
 {
@@ -73,6 +75,23 @@ namespace PortfolioProject_WebAPI_HotelListing.Repository
             }
 
             return await query.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<IPagedList<T>> GetPagedList(RequestParams requestParams,
+                                                      List<string> include = null)
+        {
+            IQueryable<T> query = _db;
+
+            if (include != null)
+            {
+                foreach (var includeProperty in include)
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+
+            return await query.AsNoTracking()
+                              .ToPagedListAsync(requestParams.PageNumber, requestParams.PageSize);
         }
 
         public async Task Insert(T entity)

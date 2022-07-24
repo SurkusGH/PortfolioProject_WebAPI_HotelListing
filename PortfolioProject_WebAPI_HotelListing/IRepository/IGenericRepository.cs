@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore.Query;
+using PortfolioProject_WebAPI_HotelListing.DataModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace PortfolioProject_WebAPI_HotelListing.IRepository
 {
@@ -12,8 +14,12 @@ namespace PortfolioProject_WebAPI_HotelListing.IRepository
         Task<IList<T>> GetAll(
             Expression<Func<T, bool>> expression = null, // <- optional parameter
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, // <- optional parameter
-            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null
-        );
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null);
+
+        Task<IPagedList<T>> GetPagedList(
+            RequestParams requestParams,
+            List<string> includes = null);
+
         Task<T> Get(Expression<Func<T, bool>> expression, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null);
         Task Insert (T entity);
         Task InsertRange(IEnumerable<T> entities);
