@@ -15,11 +15,16 @@ namespace PortfolioProject_WebAPI_HotelListing.DTOs
         public string Address { get; set; }
 
         [Required]
-        [Range(1,5, ErrorMessage = "(!) Can be double between 0 and 5")]
+        [Range(1, 5)]
         public double Rating { get; set; }
-
-        [ForeignKey(nameof(Country))]
+        
+        //[Required]
         public int CountryId { get; set; }
+    }
+
+    public class UpdateHotelDTO : CreateHotelDTO
+    {
+
     }
 
     public class HotelDTO : CreateHotelDTO
