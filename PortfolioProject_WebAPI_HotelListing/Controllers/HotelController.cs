@@ -135,7 +135,7 @@ namespace PortfolioProject_WebAPI_HotelListing.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteHotel(int id, [FromBody] UpdateHotelDTO hotelDTO)
+        public async Task<IActionResult> DeleteHotel(int id)
         {
             if (id < 1)
             {
