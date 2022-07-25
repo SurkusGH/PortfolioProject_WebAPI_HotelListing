@@ -40,6 +40,10 @@ namespace PortfolioProject_WebAPI_HotelListing
             );
             #endregion
 
+            services.ConfigureHttpCacheHeaders();
+
+            services.AddResponseCaching();
+            services.AddAuthentication();
             services.ConfigureIdentity();
 
             #region (!) JWT_ConfigurationViaExtension
@@ -75,9 +79,16 @@ namespace PortfolioProject_WebAPI_HotelListing
             });
 
             #region Microsoft.AspNetCore.Mvc.NewtonsoftJson
-            services.AddControllers().AddNewtonsoftJson(options => 
-                                                        options.SerializerSettings.ReferenceLoopHandling
-                                                              = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddControllers(config =>
+            {
+                config.CacheProfiles.Add("120SecondsDuration", new CacheProfile
+                {
+                    Duration = 120
+                });
+            })
+                    .AddNewtonsoftJson(options => 
+                                                 options.SerializerSettings.ReferenceLoopHandling
+                                                         = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.ConfigureVersioning();
             // ^ this part is weird, lecture 19;
@@ -101,6 +112,8 @@ namespace PortfolioProject_WebAPI_HotelListing
 
             app.UseCors("CorsPolicy_AllowAll"); // <- here we simply initiate CorsPolicy built in lines 32:37
 
+            app.UseResponseCaching();
+            app.UseHttpCacheHeaders();
             app.UseRouting();
 
             #region (!) JWTToken enabling middleware

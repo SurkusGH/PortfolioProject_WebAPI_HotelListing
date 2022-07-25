@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Marvin.Cache.Headers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
@@ -85,6 +86,22 @@ namespace PortfolioProject_WebAPI_HotelListing
                 options.DefaultApiVersion = new ApiVersion(1, 0);
                 options.ApiVersionReader = new HeaderApiVersionReader("api-version");
             });
+        }
+
+        public static void ConfigureHttpCacheHeaders(this IServiceCollection services)
+        {
+            services.AddResponseCaching();
+            services.AddHttpCacheHeaders(
+                (expirationOptions) =>
+                {
+                    expirationOptions.MaxAge = 120;
+                    expirationOptions.CacheLocation = CacheLocation.Private;
+                },
+                (validationOptions) =>
+                {
+                    validationOptions.MustRevalidate = true;
+                }
+                );
         }
     }
 }
