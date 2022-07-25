@@ -93,6 +93,8 @@ namespace PortfolioProject_WebAPI_HotelListing
             app.UseSwagger(); // <- these two lines are moved from if statement above, so that they are not conditional
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PortfolioProject_WebAPI_HotelListing v1"));
 
+            app.ConfigureExceptionHandler();
+
             app.UseHttpsRedirection();
 
             app.UseCors("CorsPolicy_AllowAll"); // <- here we simply initiate CorsPolicy built in lines 32:37
