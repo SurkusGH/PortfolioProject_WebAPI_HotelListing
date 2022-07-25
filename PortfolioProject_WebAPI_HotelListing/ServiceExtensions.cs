@@ -1,4 +1,5 @@
-﻿using Marvin.Cache.Headers;
+﻿using AspNetCoreRateLimit;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -13,6 +14,7 @@ using PortfolioProject_WebAPI_HotelListing.DataAccess;
 using PortfolioProject_WebAPI_HotelListing.DataModels;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace PortfolioProject_WebAPI_HotelListing
@@ -102,6 +104,26 @@ namespace PortfolioProject_WebAPI_HotelListing
                     validationOptions.MustRevalidate = true;
                 }
                 );
+        }
+
+        public static void ConfigureRateLimiting(this IServiceCollection services)
+        {
+            var rateLimitRules = new List<RateLimitRule>
+            {
+                new RateLimitRule
+                {
+                Endpoint = "*", // <- means everySingle endpoint
+                Limit = 1,
+                Period = "5s" // <- 1 call every 10 seconds
+                }
+            };
+            services.Configure<IpRateLimitOptions>(options =>
+            {
+                options.GeneralRules = rateLimitRules;
+            });
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
         }
     }
 }

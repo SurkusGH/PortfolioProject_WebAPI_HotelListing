@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,6 +40,11 @@ namespace PortfolioProject_WebAPI_HotelListing
                 options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
             #endregion
+
+            services.AddMemoryCache();
+
+            services.ConfigureRateLimiting();
+            services.AddHttpContextAccessor();
 
             services.ConfigureHttpCacheHeaders();
 
@@ -114,6 +120,9 @@ namespace PortfolioProject_WebAPI_HotelListing
 
             app.UseResponseCaching();
             app.UseHttpCacheHeaders();
+
+            //app.UseIpRateLimiting(); <-- (!) This Craches app.
+
             app.UseRouting();
 
             #region (!) JWTToken enabling middleware
