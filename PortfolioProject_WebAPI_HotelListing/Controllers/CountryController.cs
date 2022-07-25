@@ -55,7 +55,6 @@ namespace PortfolioProject_WebAPI_HotelListing.Controllers
             var result = _mapper.Map<CountryDTO>(country);
             return Ok(result);
 
-
         }
 
         [Authorize(Roles = "Administrator")]

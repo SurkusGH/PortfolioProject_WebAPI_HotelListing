@@ -78,6 +78,8 @@ namespace PortfolioProject_WebAPI_HotelListing
             services.AddControllers().AddNewtonsoftJson(options => 
                                                         options.SerializerSettings.ReferenceLoopHandling
                                                               = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+            services.ConfigureVersioning();
             // ^ this part is weird, lecture 19;
             #endregion
         }
